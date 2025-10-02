@@ -84,13 +84,7 @@ struct NotesHomeView: View {
                 }
             }
             .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: {
-                        isSearching = true
-                    }){
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
+              
                 
                 ToolbarItem(placement: .navigationBarTrailing){
                     NavigationLink(destination: NoteTakingView(notesManager: notesManager, note: nil)) {
