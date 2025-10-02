@@ -9,6 +9,19 @@ import SwiftUI
 
 struct NotesHomeView: View {
     @StateObject private var notesManager = NotesManager()
+    @State private var searchText = ""
+    @State private var isSearching = false
+    
+    private let semanticSearch = SemanticSearchService()
+    
+    var filteredNotes: [Note] {
+        if searchText.isEmpty {
+            return notesManager.notes
+        } else {
+            // Perform semantic search
+            return semanticSearch.searchNotes(searchText, in: notesManager.notes)
+        }
+    }
     
     var body: some View {
         NavigationStack{
@@ -28,9 +41,18 @@ struct NotesHomeView: View {
                             .font(.caption)
                             .opacity(0.4)
                     }
+                } else if !searchText.isEmpty && filteredNotes.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "doc.text")
+                            .font(.system(size: 60))
+                            .opacity(0.3)
+                        Text("No results found")
+                            .font(.title3)
+                            .opacity(0.5)
+                    }
                 } else {
                     List {
-                        ForEach(notesManager.notes) { note in
+                        ForEach(filteredNotes) { note in
                             ZStack {
                                 NavigationLink(destination: NoteTakingView(notesManager: notesManager, note: note)) {
                                     EmptyView()
@@ -55,10 +77,16 @@ struct NotesHomeView: View {
                 }
             }
             .navigationTitle("Notes")
+            .searchable(text: $searchText, isPresented: $isSearching, prompt: "Search notes")
+            .onChange(of: isSearching) { oldValue, newValue in
+                if !newValue {
+                    searchText = ""
+                }
+            }
             .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
-                        
+                        isSearching = true
                     }){
                         Image(systemName: "magnifyingglass")
                     }
