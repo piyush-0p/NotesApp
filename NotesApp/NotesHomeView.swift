@@ -103,12 +103,12 @@ struct NotesCardView: View {
             
             //Date
             Text(note.formattedDate)
-                .font(.system(size: 13))
+                .font(.system(size: 12))
                 .foregroundColor(.primary)
-                .opacity(0.5)
-                .padding(.leading, 4)
+                .opacity(0.4)
+                .padding(.leading, 8)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, -2)
     }
 }
 
